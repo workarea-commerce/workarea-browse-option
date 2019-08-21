@@ -1,0 +1,39 @@
+require 'test_helper'
+
+module Workarea
+  decorate Search::RelatedProductsTest, with: :browse_option do
+    def test_browse_option_search_product_ids
+      products = Array.new(2) { create_product }
+      browse_option_product = products.first
+      browse_option_product.update_attributes!(
+        browse_option: 'color',
+        variants: [
+          { sku: 'SKU1', details: { color: ['Red'] } },
+          { sku: 'SKU2', details: { color: ['Blue'] } }
+        ]
+      )
+      query = Search::RelatedProducts.new(product_ids: products.map(&:id))
+
+      assert_includes(query.search_product_ids, "product-#{products.second.id}")
+      assert_includes(query.search_product_ids, "product-#{browse_option_product.id}-red")
+      assert_includes(query.search_product_ids, "product-#{browse_option_product.id}-blue")
+    end
+
+    def test_browse_option_exclude_search_product_ids
+      products = Array.new(2) { create_product }
+      products.first.update_attributes!(
+        browse_option: 'color',
+        variants: [
+          { sku: 'SKU1', details: { color: ['Red'] } },
+          { sku: 'SKU2', details: { color: ['Blue'] } }
+        ]
+      )
+      query = Search::RelatedProducts.new(
+        product_ids: products.map(&:id),
+        exclude_product_ids: products.last.id
+      )
+
+      assert_includes(query.exclude_search_product_ids, "product-#{products.last.id}")
+    end
+  end
+end

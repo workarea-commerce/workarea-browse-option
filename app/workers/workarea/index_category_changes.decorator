@@ -1,0 +1,7 @@
+module Workarea
+  decorate IndexCategoryChanges, with: :browse_option do
+    def require_index_ids(previous_ids, new_ids)
+      super.map { |id| BrowseOptionIds.extract(id) }
+    end
+  end
+end

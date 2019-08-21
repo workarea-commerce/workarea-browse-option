@@ -1,0 +1,25 @@
+module Workarea
+  decorate Admin::CategorizationsController, with: :browse_option do
+    def create
+      ids = BrowseOptionIds.all_for(@product.model)
+
+      Catalog::Category.in(id: params[:category_ids]).each do |category|
+        ids.each { |id| category.product_ids.prepend(id) }
+        category.save!
+      end
+
+      flash[:success] = t('workarea.admin.categorizations.flash_messages.added')
+      redirect_to catalog_product_categorizations_path(@product)
+    end
+
+    def destroy
+      category = Catalog::Category.find_by(slug: params[:id])
+      ids = BrowseOptionIds.all_for(@product.model)
+      category.product_ids.reject! { |id| ids.include?(id) }
+      category.save!
+
+      flash[:success] = t('workarea.admin.categorizations.flash_messages.removed')
+      head :ok
+    end
+  end
+end

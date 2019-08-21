@@ -1,0 +1,30 @@
+module Workarea
+  decorate Search::RelatedProducts, with: :browse_option do
+    def search_product_ids
+      @search_product_ids ||= products.flat_map { |p| search_model_for(p) }.map(&:id)
+    end
+
+    def exclude_search_product_ids
+      @exclude_search_product_ids ||=
+        begin
+          catalog_ids = Array(params[:exclude_product_ids])
+          products = Catalog::Product.any_in(id: catalog_ids).to_a
+          products.flat_map { |p| search_model_for(p) }.map(&:id)
+        end
+    end
+
+    def search_model_for(product)
+      if product.browses_by_option?
+        product.browse_options.map do |value|
+          Search::Storefront::ProductOption.new(
+            product,
+            option: product.browse_option,
+            value: value
+          )
+        end
+      else
+        Search::Storefront::Product.new(product)
+      end
+    end
+  end
+end

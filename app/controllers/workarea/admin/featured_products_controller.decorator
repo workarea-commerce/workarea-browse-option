@@ -1,0 +1,63 @@
+module Workarea
+  decorate Admin::FeaturedProductsController, with: :browse_option do
+    def select
+      search = Search::AdminProducts.new(view_model_options)
+      @search = Admin::FeaturedProductsSearchViewModel.new(
+        search,
+        view_model_options
+      )
+    end
+
+    def add
+      product_id, option = BrowseOptionIds.split(params[:product_id])
+      product = Catalog::Product.find(product_id)
+
+      @featurable.add_product(params[:product_id])
+
+      flash[:success] = t(
+        'workarea.admin.featured_products.flash_messages.added',
+        name: product.name
+      )
+
+      render(
+        partial: 'workarea/admin/featured_products/selected',
+        locals: {
+          featurable: @featurable,
+          product: wrap_in_browse_option_view_model(product, option)
+        }
+      )
+    end
+
+    def remove
+      product_id, option = BrowseOptionIds.split(params[:product_id])
+      product = Catalog::Product.find(product_id)
+
+      @featurable.remove_product(params[:product_id])
+
+      flash[:success] = t(
+        'workarea.admin.featured_products.flash_messages.removed',
+        name: product.name
+      )
+
+      render(
+        partial: 'workarea/admin/featured_products/unselected',
+        locals: {
+          featurable: @featurable,
+          product: wrap_in_browse_option_view_model(product, option)
+        }
+      )
+    end
+
+    private
+
+    def wrap_in_browse_option_view_model(product, option)
+      return Admin::ProductViewModel.wrap(product) \
+        unless product.browse_option.present?
+
+      Admin::FeaturedBrowseOptionProductViewModel.wrap(
+        product,
+        product.browse_option => option
+      )
+    end
+  end
+end

@@ -1,0 +1,8 @@
+---
+en:
+  workarea:
+    admin:
+      catalog_products:
+        browse_by_option: Browse by Option
+        card:
+          browse_option: 'Browse Option:'

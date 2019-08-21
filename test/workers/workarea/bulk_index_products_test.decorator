@@ -1,0 +1,49 @@
+require 'test_helper'
+
+module Workarea
+  decorate BulkIndexProductsTest, with: :browse_option do
+    def test_peform
+      Workarea::Search::Storefront.reset_indexes!
+
+      Sidekiq::Callbacks.disable(IndexProduct) do
+        products = 2.times.map { |n| create_product(id: "PRODUCT     #{n}") }
+
+        assert_equal(0, Search::Storefront.count)
+        BulkIndexProducts.new.perform(products.map(&:id))
+        assert_equal(2, Search::Storefront.count)
+
+        products.first.update_attributes!(
+          browse_option: 'color',
+          variants: [
+            { sku: 'SKU1', details: { color: ['Red'] } },
+            { sku: 'SKU2', details: { color: ['Blue'] } }
+          ]
+        )
+
+        assert_equal(2, Search::Storefront.count)
+        BulkIndexProducts.new.perform(products.map(&:id))
+        assert_equal(3, Search::Storefront.count)
+      end
+    end
+
+    def test_perform_from_browse_option_ids
+      Workarea::Search::Storefront.reset_indexes!
+
+      Sidekiq::Callbacks.disable(IndexProduct) do
+        product_one = create_product
+        product_two = create_product(
+          browse_option: 'color',
+          variants: [
+            { sku: 'SKU1', details: { color: ['Red'] } },
+            { sku: 'SKU2', details: { color: ['Blue'] } }
+          ]
+        )
+
+        BulkIndexProducts.new.perform(
+          [product_one.id, *BrowseOptionIds.all_for(product_two)]
+        )
+        assert_equal(3, Search::Storefront.count)
+      end
+    end
+  end
+end

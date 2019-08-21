@@ -1,0 +1,12 @@
+module Workarea
+  decorate Storefront::ProductViewModel::CacheKey, with: :browse_option do
+    private
+
+    def option_parts
+      option = @product.browse_option
+      return super unless option.present? && @options[option].present?
+
+      super.unshift(@options[option])
+    end
+  end
+end

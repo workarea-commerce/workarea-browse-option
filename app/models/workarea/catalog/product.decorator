@@ -1,0 +1,20 @@
+module Workarea
+  decorate Catalog::Product, with: :browse_option do
+    decorated do
+      field :browse_option, type: String
+    end
+
+    def browses_by_option?
+      browse_option.present?
+    end
+
+    def browse_options
+      variants
+        .select(&:active?)
+        .map { |v| v.fetch_detail(browse_option) }
+        .flatten
+        .reject(&:blank?)
+        .uniq
+    end
+  end
+end

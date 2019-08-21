@@ -1,0 +1,17 @@
+module Workarea
+  decorate Search::ProductEntries, with: :browse_option do
+    def index_entries_for(product)
+      if product.browses_by_option?
+        product.browse_options.map do |value|
+          Search::Storefront::ProductOption.new(
+            product,
+            option: product.browse_option,
+            value: value
+          )
+        end
+      else
+        super
+      end
+    end
+  end
+end

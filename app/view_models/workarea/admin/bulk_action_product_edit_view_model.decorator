@@ -1,0 +1,10 @@
+module Workarea
+  decorate Admin::BulkActionProductEditViewModel, with: :browse_option do
+    def browse_options
+      [['None', nil]] +
+        Search::Settings.current.terms_facets.map do |facet|
+          [facet.titleize, facet]
+        end
+    end
+  end
+end

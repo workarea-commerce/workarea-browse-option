@@ -1,0 +1,2 @@
+json.browse_option product.browse_option
+json.current_browse_option product.current_browse_option

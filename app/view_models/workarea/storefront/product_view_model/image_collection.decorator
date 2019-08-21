@@ -1,0 +1,26 @@
+module Workarea
+  decorate Storefront::ProductViewModel::ImageCollection, with: :browse_option do
+
+    def primary
+      @browse_option_primary ||= browse_option_image || super
+    end
+
+    private
+
+    def browse_option_image
+      unless @product.browses_by_option? && current_browse_option.present?
+        return
+      end
+
+      @all.detect do |image|
+        image.option&.optionize.in?(
+          Array(current_browse_option).map(&:optionize)
+        )
+      end
+    end
+
+    def current_browse_option
+      @options[:option] || @options[@product.browse_option.optionize]
+    end
+  end
+end

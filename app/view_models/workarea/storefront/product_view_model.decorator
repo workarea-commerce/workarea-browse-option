@@ -1,0 +1,15 @@
+module Workarea
+  decorate Storefront::ProductViewModel, with: :browse_option do
+    def browse_link_options
+      @browse_link_options_with_browse_option ||= super.tap do |link_options|
+        link_options[browse_option.optionize] =
+          options[:option] if options[:option].present?
+      end
+    end
+
+    def current_browse_option
+      return nil unless browse_option.present?
+      options[:option] || options[browse_option.optionize]
+    end
+  end
+end

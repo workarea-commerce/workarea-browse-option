@@ -1,0 +1,19 @@
+require 'test_helper'
+
+module Workarea
+  decorate Search::ProductEntriesTest, with: :browse_option do
+    def test_browse_option_entries
+      products = Array.new(2) { create_product }
+
+      products.first.update_attributes!(
+        browse_option: 'color',
+        variants: [
+          { sku: 'SKU1', details: { color: ['Red'] } },
+          { sku: 'SKU2', details: { color: ['Blue'] } }
+        ]
+      )
+
+      assert_equal(3, Search::ProductEntries.new(products).entries.size)
+    end
+  end
+end

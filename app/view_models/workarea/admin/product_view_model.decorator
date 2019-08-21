@@ -1,0 +1,9 @@
+module Workarea
+  decorate Admin::ProductViewModel, with: :browse_option do
+    def browse_options
+      [['None', nil]] + variants.map do |variant|
+        variant.details.keys.map { |k| [k, k] }
+      end.flatten.map { |v| [v, v] }.uniq
+    end
+  end
+end

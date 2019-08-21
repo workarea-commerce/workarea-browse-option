@@ -1,0 +1,10 @@
+.bulk-actions__sub-section
+  .grid
+    .grid__cell
+      .property-toggle
+        .property-toggle__checkbox
+          = check_box_tag 'toggle_browses_by', nil, nil, class: 'toggle-property__check-box'
+        .property-toggle__property
+          .property
+            = label_tag 'bulk_action[settings][browse_option]', t('workarea.admin.catalog_products.browse_by_option'), class: 'property__name'
+            = select_tag 'bulk_action[settings][browse_option]', options_for_select(bulk_action.browse_options), disabled: true, class: 'toggle-property__input text-box', data: { property_toggle_allow_blank: '' }

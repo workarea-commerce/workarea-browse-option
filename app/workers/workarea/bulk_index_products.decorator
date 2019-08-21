@@ -1,0 +1,34 @@
+module Workarea
+  decorate BulkIndexProducts, with: :browse_option do
+    class_methods do
+      def perform(ids = Catalog::Product.pluck(:id))
+        ids = ids.map { |id| BrowseOptionIds.extract(id) }.uniq
+        super(ids)
+      end
+
+      def perform_by_models(products)
+        return if products.blank?
+        delete_existing_documents(products)
+        super
+      end
+
+      private
+
+      def delete_existing_documents(products)
+        I18n.for_each_locale do
+          ids = products.map do |product|
+            id = Search::Storefront::Product.new(product).keywords[:catalog_id]
+            id.gsub(Workarea.config.search_index_id_escape_regex) { |match| "\\#{match}" }
+          end
+          query = { query: { terms: { 'keywords.catalog_id': ids } } }
+          hits = Search::Storefront.search(query)['hits']['hits']
+          documents = hits.map do |hit|
+            { id: hit['_source']['id'], bulk_action: :delete }
+          end
+
+          Search::Storefront.bulk(documents)
+        end
+      end
+    end
+  end
+end
