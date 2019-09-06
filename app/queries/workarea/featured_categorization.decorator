@@ -1,0 +1,43 @@
+module Workarea
+  decorate FeaturedCategorization, with: 'browse_option' do
+    def browse_option_ids
+      [@product.id, *BrowseOptionIds.all_for(@product)]
+    end
+
+    def all
+      @all ||= begin
+        result = live
+
+        categories_affected_by_current_release.each do |category|
+          if browse_option_ids.any? { |id| category.featured_product?(id) }
+            result += [category] unless result.include?(category)
+          else
+            result -= [category]
+          end
+        end
+
+        result
+      end
+    end
+
+    def live
+      @live ||= Catalog::Category.by_product(browse_option_ids).to_a
+    end
+
+    def categories_affected_by_current_release
+      return [] if Release.current.blank?
+
+      browse_option_changesets
+        .where(releasable_type: Catalog::Category.name)
+        .in(release_id: releases_affecting_current_release.map(&:id))
+        .map(&:releasable)
+    end
+
+    def browse_option_changesets
+      Release::Changeset.any_of(
+        { :'changeset.product_ids'.in => browse_option_ids },
+        { :'original.product_ids'.in => browse_option_ids }
+      )
+    end
+  end
+end
