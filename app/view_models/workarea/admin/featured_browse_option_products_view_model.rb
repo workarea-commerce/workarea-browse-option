@@ -16,6 +16,8 @@ module Workarea
                 tmp.browse_option => option&.optionize
               )
             end
+
+            results.compact
           end
       end
     end

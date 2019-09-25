@@ -40,6 +40,22 @@ module Workarea
 
         assert_equal([], category.reload.product_ids)
       end
+
+      def test_delete_featured_products
+        product = create_product
+        category = create_category(product_ids: [product.id])
+
+        get admin.catalog_category_path(category)
+
+        assert(response.success?)
+
+        assert(product.destroy!)
+
+        # ActionView::Template::Error: undefined method `primary_image' for nil:NilClass
+        get admin.catalog_category_path(category)
+
+        assert(response.success?)
+      end
     end
   end
 end
