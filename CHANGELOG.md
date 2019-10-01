@@ -1,3 +1,21 @@
+Workarea Browse Option 2.1.7 (2019-10-01)
+--------------------------------------------------------------------------------
+
+*   try to fix build
+
+    Tom Scott
+
+*   Fix Deleted Featured Products
+
+    Prevent an error in admin when browsing a category with a featured
+    product that has since been deleted. Ensure that no `nil` records are
+    returned by the `#featured_products` method in the view model(s).
+
+    Fixes #1
+    Tom Scott
+
+
+
 Workarea Browse Option 2.1.6 (2019-08-21)
 --------------------------------------------------------------------------------
 
