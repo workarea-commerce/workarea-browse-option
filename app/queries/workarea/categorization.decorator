@@ -4,8 +4,8 @@ module Workarea
 
     def manual_models
       return [] if @product.blank?
-      @manual_models ||= Catalog::Category.by_product(
-        [@product.id, *BrowseOptionIds.all_for(@product)]
+      @manual_models ||= FeaturedCategorization.new(
+        @product.id, *BrowseOptionIds.all_for(@product)
       ).to_a
     end
   end
