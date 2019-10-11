@@ -31,8 +31,7 @@ module Workarea
       end
 
       def test_cache_key
-        cached_product = Catalog::Product.new(create_product.as_document)
-        cached_product.browse_option = 'color'
+        cached_product = create_product(browse_option: 'color')
 
         view_model = ProductViewModel.new(cached_product, color: 'red')
         assert_match(/red/, view_model.cache_key)
