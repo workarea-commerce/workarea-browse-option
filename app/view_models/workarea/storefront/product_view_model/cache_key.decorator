@@ -4,9 +4,9 @@ module Workarea
 
     def option_parts
       option = @product.browse_option
-      return super unless option.present? && @options[option].present?
+      return super unless option.present? && @options['option'].present?
 
-      super.unshift(@options[option])
+      super.unshift(@options['option'].optionize)
     end
   end
 end
