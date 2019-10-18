@@ -21,7 +21,7 @@ module Workarea
         select 'Color', from: 'bulk_action[settings][browse_option]'
 
         click_button t('workarea.admin.bulk_action_product_edits.edit.review_changes')
-        assert(page.has_content?('Browse Option: Color'))
+        assert(page.has_content?('Browse Option Color'))
         click_button t('workarea.admin.bulk_action_product_edits.review.save_and_finish')
         assert(page.has_content?('Your product edits are being processed'))
 
