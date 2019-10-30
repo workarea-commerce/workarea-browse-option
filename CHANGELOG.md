@@ -1,3 +1,27 @@
+Workarea Browse Option 2.1.8 (2019-10-30)
+--------------------------------------------------------------------------------
+
+*   Update cache_key.decorator
+
+    Base on what I'm reading here: https://github.com/workarea-commerce/workarea-browse-option/blob/master/app/models/workarea/search/storefront/product_option.rb
+
+    and some experimentation in a shell:
+    ```
+    irb(main):021:0> p.options['option']
+    => "Dusty Blue"
+    irb(main):022:0> p.browse
+    p.browse_link_options   p.browse_option         p.browse_options        p.browse_swatch_option  p.browser_title
+    irb(main):022:0> p.browse_option
+    => "color"
+    irb(main):023:0> p.options[p.browse_option]
+    => nil
+    ```
+
+    This looks like it needs to be updated
+    Jesse McPherson
+
+
+
 Workarea Browse Option 2.1.7 (2019-10-01)
 --------------------------------------------------------------------------------
 
