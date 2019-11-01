@@ -36,6 +36,9 @@ module Workarea
 
         view_model = ProductViewModel.new(cached_product, color: 'red')
         assert_match(/red/, view_model.cache_key)
+
+        view_model = ProductViewModel.new(cached_product, option: 'red')
+        assert_match(/red/, view_model.cache_key)
       end
 
       def test_primary_image
