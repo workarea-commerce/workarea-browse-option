@@ -1,3 +1,17 @@
+Workarea Browse Option 2.1.9 (2019-11-12)
+--------------------------------------------------------------------------------
+
+*   Restore Functionality for Explicit Options Passing
+
+    Sometimes, an option named "option" will be passed into the product view
+    model that indicates what should be included in the cache key, and other
+    times it will be the actual name of the option, like "color". Ensure
+    that both variants are supported in the `CacheKey#option_parts` for
+    product view models.
+    Tom Scott
+
+
+
 Workarea Browse Option 2.1.8 (2019-10-30)
 --------------------------------------------------------------------------------
 
