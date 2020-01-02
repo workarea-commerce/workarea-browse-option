@@ -6,5 +6,5 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'workarea', github: 'workarea-commerce/workarea'
+gem 'workarea', github: 'workarea-commerce/workarea', branch: 'v3.5-stable'
 gem 'workarea-api', github: 'workarea-commerce/workarea-api'
