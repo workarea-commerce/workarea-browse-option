@@ -1,3 +1,44 @@
+Workarea Browse Option 2.2.0 (2020-01-21)
+--------------------------------------------------------------------------------
+
+*   Fix v3.5 update issue
+
+    Tom Scott
+
+*   Allow passing `option` as the actual option name as well
+
+    Tom Scott
+
+*   Update cache_key.decorator
+
+    Base on what I'm reading here: https://github.com/workarea-commerce/workarea-browse-option/blob/master/app/models/workarea/search/storefront/product_option.rb
+
+    and some experimentation in a shell:
+    ```
+    irb(main):021:0> p.options['option']
+    => "Dusty Blue"
+    irb(main):022:0> p.browse
+    p.browse_link_options   p.browse_option         p.browse_options        p.browse_swatch_option  p.browser_title
+    irb(main):022:0> p.browse_option
+    => "color"
+    irb(main):023:0> p.options[p.browse_option]
+    => nil
+    ```
+
+    This looks like it needs to be updated
+    Jesse McPherson
+
+*   Update test to reflect text ouput for bulk editing products
+
+    Matt Duffy
+
+*   Update categorization decoration for workarea v3.5
+
+    BROWSEOPTION-2
+    Matt Duffy
+
+
+
 Workarea Browse Option 2.1.7 (2019-10-01)
 --------------------------------------------------------------------------------
 
