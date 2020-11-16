@@ -14,6 +14,8 @@ module Workarea
       alias_method :perform_by_model, :perform_by_models
 
       def delete_existing_documents(products)
+        return if products.blank?
+
         I18n.for_each_locale do
           ids = find_ids_to_delete(products)
           Search::Storefront.bulk(ids.map { |id| { id: id, bulk_action: :delete } })
@@ -21,6 +23,8 @@ module Workarea
       end
 
       def find_ids_to_delete(products)
+        return [] if products.blank?
+
         ids = Array.wrap(products).map do |product|
           id = Search::Storefront::Product.new(product).keywords[:catalog_id]
           id.gsub(Workarea.config.search_index_id_escape_regex) { |match| "\\#{match}" }
