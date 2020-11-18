@@ -26,11 +26,11 @@ module Workarea
       Workarea::Search::Storefront.reset_indexes!
 
       foo_bar = create_product(id: 'FOO BAR')
-      IndexProduct.perform(create_product(id: 'FOO'))
-      IndexProduct.perform(create_product(id: 'BAR'))
-      IndexProduct.perform(foo_bar)
+      BulkIndexProducts.perform_by_models(create_product(id: 'FOO'))
+      BulkIndexProducts.perform_by_models(create_product(id: 'BAR'))
+      BulkIndexProducts.perform_by_models(foo_bar)
 
-      IndexProduct.clear(foo_bar)
+      BulkIndexProducts.delete_existing_documents(foo_bar)
       assert_equal(2, Search::Storefront.count)
     end
   end

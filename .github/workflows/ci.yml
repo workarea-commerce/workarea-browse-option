@@ -1,5 +1,7 @@
 name: CI
 on: [push]
+env:
+  TESTOPTS: '-b'
 
 jobs:
   static_analysis:

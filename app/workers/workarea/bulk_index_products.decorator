@@ -11,23 +11,27 @@ module Workarea
         delete_existing_documents(products)
         super
       end
-
-      private
+      alias_method :perform_by_model, :perform_by_models
 
       def delete_existing_documents(products)
-        I18n.for_each_locale do
-          ids = products.map do |product|
-            id = Search::Storefront::Product.new(product).keywords[:catalog_id]
-            id.gsub(Workarea.config.search_index_id_escape_regex) { |match| "\\#{match}" }
-          end
-          query = { query: { terms: { 'keywords.catalog_id': ids } } }
-          hits = Search::Storefront.search(query)['hits']['hits']
-          documents = hits.map do |hit|
-            { id: hit['_source']['id'], bulk_action: :delete }
-          end
+        return if products.blank?
 
-          Search::Storefront.bulk(documents)
+        I18n.for_each_locale do
+          ids = find_ids_to_delete(products)
+          Search::Storefront.bulk(ids.map { |id| { id: id, bulk_action: :delete } })
         end
+      end
+
+      def find_ids_to_delete(products)
+        return [] if products.blank?
+
+        ids = Array.wrap(products).map do |product|
+          id = Search::Storefront::Product.new(product).keywords[:catalog_id]
+          id.gsub(Workarea.config.search_index_id_escape_regex) { |match| "\\#{match}" }
+        end
+
+        query = { query: { terms: { 'keywords.catalog_id': ids } } }
+        Search::Storefront.search(query)['hits']['hits'].pluck('_id')
       end
     end
   end
